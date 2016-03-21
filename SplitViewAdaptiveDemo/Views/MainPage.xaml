@@ -1,0 +1,122 @@
+﻿<Page
+    x:Class="SplitViewAdaptiveDemo.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SplitViewAdaptiveDemo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/SplitViewStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding Source={StaticResource SplitViewIconSize}, Converter={StaticResource GridLengthConverter}}"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="MinWidth0">
+                    <VisualState.Setters>
+                        <Setter Target="MySplitView.(SplitView.IsPaneOpen)" Value="False"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="MinWidth640">
+                    <VisualState.Setters>
+                        <Setter Target="MySplitView.(SplitView.DisplayMode)" Value="CompactOverlay"/>
+                        <Setter Target="MySplitView.(SplitView.IsPaneOpen)" Value="False"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="0" MinWindowWidth="640"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="MinWidth1200">
+                    <VisualState.Setters>
+                        <Setter Target="MySplitView.(SplitView.IsPaneOpen)" Value="True"/>
+                        <Setter Target="MySplitView.(SplitView.DisplayMode)" Value="Inline"/>
+                        <Setter Target="HamburgerButton.(UIElement.Visibility)" Value="Collapsed"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="0" MinWindowWidth="1200"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <RelativePanel Grid.Row="0" Background="{ThemeResource HamburgerBG}">
+            <Button RelativePanel.AlignLeftWithPanel="True" x:Name="HamburgerButton"
+    			FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
+    			Height="{StaticResource SplitViewIconSize}" Width="{StaticResource SplitViewIconSize}" BorderThickness="0" Margin="0"
+    			Click="HamburgerButton_Click"
+    			Style="{ThemeResource HamburgerButtonStyle}"/>
+
+            <Button RelativePanel.RightOf="HamburgerButton" x:Name="BackButton"
+    			FontFamily="Segoe MDL2 Assets" Content=""
+    			Height="{StaticResource SplitViewIconSize}" Width="{StaticResource SplitViewIconSize}" BorderThickness="0" Margin="0"
+    			Click="BackButton_Click"
+                Visibility="{Binding CanGoBack, ElementName=ContentFrame, Converter={StaticResource VisibilityConverter}}"
+    			Style="{ThemeResource HamburgerButtonStyle}"/>
+
+            <TextBlock x:Name="AppNameTextBlock" Text="{StaticResource AppName}"
+                       RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+                       Foreground="White" FontWeight="Bold"/>
+        </RelativePanel>
+
+        <SplitView x:Name="MySplitView" Grid.Row="1" DisplayMode="Overlay"
+                   CompactPaneLength="{StaticResource SplitViewIconSize}" OpenPaneLength="{StaticResource SplitViewExpandedSize}"
+                   PaneBackground="{ThemeResource SplitViewBackgroundBrush}">
+            <SplitView.Pane>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel x:Name="NavigationContainer" Grid.Row="0" Orientation="Vertical">
+                            <RadioButton x:Name="HomeNav"
+                                         Content="Home" Tag="&#xE10F;"
+                                         Checked="HomeNav_Checked"
+                                         Style="{ThemeResource NavigationRadioButtonStyle}"/>
+                            <RadioButton x:Name="CarsNav"
+                                         Content="Cars" Tag="&#xE7EC;"
+                                         Checked="CarsNav_Checked"
+                                         Style="{ThemeResource NavigationRadioButtonStyle}"/>
+                            <RadioButton x:Name="DevicesNav"
+                                         Content="Devices" Tag="&#xE70C;"
+                                         Checked="DevicesNav_Checked"
+                                         Style="{ThemeResource NavigationRadioButtonStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="SettingsContainer" Grid.Row="1" Orientation="Vertical">
+                            <Rectangle Height="1" Fill="#59FFFFFF"/>
+                            <RadioButton x:Name="ProfileNav"
+                                         Content="My Profile" Tag="&#xE2AF;"
+                                         Checked="MyProfileNav_Checked"
+                                         Style="{ThemeResource NavigationRadioButtonStyle}"/>
+                            <RadioButton x:Name="SettingsNav"
+                                         Content="Settings" Tag="&#xE713;"
+                                         Checked="SettingsNav_Checked"
+                                         Style="{ThemeResource NavigationRadioButtonStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <Frame x:Name="ContentFrame"/>
+            </SplitView.Content>
+        </SplitView>
+    </Grid>
+</Page>
